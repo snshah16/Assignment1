@@ -21,30 +21,36 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Include session token
           aws-region: us-east-1
           
-    # Step 3: Login to Amazon ECR using AWS CLI
+    # Step 3: Login to Amazon ECR and Capture Registry URI
       - name: Login to Amazon ECR
+        id: login-ecr  # ID to reference outputs from this step
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: 064686496891.dkr.ecr.us-east-1.amazonaws.com
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}  # Include session token
-        run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 064686496891.dkr.ecr.us-east-1.amazonaws.com
-
-      - name: Build and Push MySQL Docker Image
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          
+      - name: Build, Tag, and Push MySQL Docker Image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # Use the output from the login step
+          ECR_REPOSITORY: my-mysql-image  # Define your repository name
+          IMAGE_TAG: latest  # Define your image tag
         run: |
           cd database
-          docker build -t my-mysql-image .
-          docker tag my-mysql-image:latest $ECR_REGISTRY/my-mysql-image:latest
-          docker push $ECR_REGISTRY/my-mysql-image:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      # Step 4: Build and Push Application Docker Image
-      - name: Build and Push Application Docker Image
+      # Step 5: Build and Push Application Docker Image
+      - name: Build, Tag, and Push Application Docker Image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  # Use the output from the login step
+          ECR_REPOSITORY: my-app-image  # Define your repository name
+          IMAGE_TAG: latest  # Define your image tag
         run: |
           cd ../app
-          docker build -t my-app-image .
-          docker tag my-app-image:latest $ECR_REGISTRY/my-app-image:latest
-          docker push $ECR_REGISTRY/my-app-image:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
