@@ -34,5 +34,5 @@ jobs:
       - name: Build and Push Application Docker Image
         run: |
           docker build -t my-app-image .
-          docker tag my-app-image:latest 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
-          docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
+          docker tag my-app-image:latest 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
+          docker push 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
