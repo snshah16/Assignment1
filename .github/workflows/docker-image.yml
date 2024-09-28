@@ -6,7 +6,7 @@ on:
 
   pull_request:
     branches:
-      - main  # Optional: To trigger the workflow on PRs to main
+      - main  
 
 jobs:
   build:
