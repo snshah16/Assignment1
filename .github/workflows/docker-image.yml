@@ -27,12 +27,14 @@ jobs:
 
       - name: Build and Push MySQL Docker Image
         run: |
+          cd database
           docker build -t my-mysql-image .
           docker tag my-mysql-image:latest 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-mysql-image:latest
           docker push 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-mysql-image:latest
 
       - name: Build and Push Application Docker Image
         run: |
+          cd ../app
           docker build -t my-app-image .
           docker tag my-app-image:latest 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
           docker push 064686496891.dkr.ecr.us-east-1.amazonaws.com/my-app-image:latest
