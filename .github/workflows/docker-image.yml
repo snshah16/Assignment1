@@ -6,7 +6,7 @@ on:
 
   pull_request:
     branches:
-      - main  
+      - main  #it will pull request
 
 jobs:
   build:
