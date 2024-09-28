@@ -50,7 +50,6 @@ jobs:
           ECR_REPOSITORY: my-app-image  # Define your repository name
           IMAGE_TAG: latest  # Define your image tag
         run: |
-          cd ../app
+          cd app  # Change to the 'app' directory
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
