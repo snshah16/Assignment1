@@ -9,5 +9,7 @@ RUN set -xe \
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 8080
+ARG DB_HOST_ARG="my-mysql-container"
+ENV DBHOST=${DB_HOST_ARG}
 ENTRYPOINT [ "python3" ]
 CMD [ "app.py" ]
